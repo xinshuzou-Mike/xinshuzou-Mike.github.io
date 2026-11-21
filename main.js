@@ -16,7 +16,30 @@
   function authors(a){ return a.replace("X. Zou", "<strong>X. Zou</strong>"); }
   function zh(){ return root.lang === "zh-CN"; }
 
+  var THEMES = {
+    ice: ["Ice and hydrates", "冰与水合物"],
+    optics: ["Optical coatings", "光学薄膜"],
+    max: ["Ceramics and MXenes", "陶瓷与 MXene"],
+    energy: ["Batteries", "电池"]
+  };
+  function renderFeatured(){
+    var box = document.getElementById("featured");
+    if (!box) return;
+    var list = PUBS.filter(function(p){ return isFirst(p) && !p.thesis; });
+    list.sort(function(a, b){ return b.y - a.y; });
+    box.innerHTML = list.map(function(p){
+      var title = p.doi
+        ? '<a class="ft" href="https://doi.org/' + p.doi + '" target="_blank" rel="noopener">' + p.t + '</a>'
+        : '<span class="ft">' + p.t + '</span>';
+      var th = THEMES[p.th] ? THEMES[p.th][zh() ? 1 : 0] : "";
+      return '<article class="fcard"><span class="badge">' + (zh() ? "第一作者" : "First author") + '</span>' + title +
+        '<p class="fj"><i>' + p.j + '</i>' + (p.v ? ", " + p.v : "") + ", " + p.y + '</p>' +
+        (th ? '<p class="fth">' + th + '</p>' : "") + '</article>';
+    }).join("");
+  }
+
   function renderPubs(){
+    renderFeatured();
     var shown = PUBS.filter(function(p){
       return (state.theme === "all" || p.th === state.theme) && (!state.first || isFirst(p));
     });
@@ -45,7 +68,7 @@
           : '<span class="pt">' + p.t + '</span>';
         var venue = p.thesis
           ? p.j + '<span class="kind">' + (zh() ? "博士论文" : "PhD thesis") + '</span>'
-          : '<i>' + p.j + '</i>' + (p.v ? ", " + p.v : "");
+          : '<i>' + p.j + '</i>' + (p.v ? ", " + p.v : "") + (isFirst(p) ? '<span class="kind first">' + (zh() ? "第一作者" : "First author") + '</span>' : "");
         return '<li>' + title + '<div class="pa">' + authors(p.a) + '</div><div class="pv">' + venue + '</div></li>';
       }).join("");
       return '<section class="yr"><h3>' + y + '</h3><ol>' + items + '</ol></section>';

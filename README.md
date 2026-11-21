@@ -1,6 +1,6 @@
 # Xinshu Zou 个人主页
 
-网址：https://你的用户名.github.io
+网址：https://xinshuzou.github.io
 
 ## 文件说明（全部放在仓库最外层，不需要文件夹）
 
